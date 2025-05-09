@@ -17,6 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Profile from './pages/Profile'
+import Wishlist from './pages/WishList'
 
 const App = () => {
   return (
@@ -37,6 +38,7 @@ const App = () => {
          <Route path='/forgotpassword' element={<ForgotPassword />} />
          <Route path='/reset-password' element={<ResetPassword />} />
           <Route path='/profile' element={<Profile/>}/>
+              <Route path='/wishlist' element={<Wishlist/>}/>
       </Routes>
       <Footer />
     </div>

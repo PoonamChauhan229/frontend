@@ -1,5 +1,5 @@
-import { createContext, useEffect, useState } from "react";
-import { products } from "../assets/assets";
+import React, { createContext, useState, useEffect } from "react";
+import { products } from "../assets/assets"; // Assuming you have a list of products here
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -9,24 +9,32 @@ const ShopContextProvider = (props) => {
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
+  const [wishlistItems, setWishlistItems] = useState({});
   const navigate = useNavigate();
 
   const currency = "$";
   const delivery_fee = 10;
 
+  // Load cart items and wishlist from localStorage on initial load
   useEffect(() => {
-    // INFO: Load cart items from localStorage when the component mounts
     const storedCartItems = JSON.parse(localStorage.getItem("cartItems"));
     if (storedCartItems) {
       setCartItems(storedCartItems);
     }
+
+    const storedWishlistItems = JSON.parse(localStorage.getItem("wishlistItems"));
+    if (storedWishlistItems) {
+      setWishlistItems(storedWishlistItems);
+    }
   }, []);
 
+  // Save cart and wishlist items to localStorage whenever they change
   useEffect(() => {
-    // INFO: Save cart items to localStorage whenever cartItems changes
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
-  }, [cartItems]);
+    localStorage.setItem("wishlistItems", JSON.stringify(wishlistItems));
+  }, [cartItems, wishlistItems]);
 
+  // Add item to cart
   const addToCart = async (itemId, size) => {
     if (!size) {
       toast.error("Please Select a Size");
@@ -51,6 +59,7 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData);
   };
 
+  // Get the total count of items in the cart
   const getCartCount = () => {
     let totalCount = 0;
     for (const items in cartItems) {
@@ -60,13 +69,19 @@ const ShopContextProvider = (props) => {
             totalCount += cartItems[items][item];
           }
         } catch (error) {
-          // INFO: Error Handling
+          // Error Handling
         }
       }
     }
     return totalCount;
   };
 
+  // Get the wishlist count
+  const getWishlistCount = () => {
+    return Object.keys(wishlistItems).length;  // Count the number of items in wishlistItems
+  };
+
+  // Update the quantity of a specific item in the cart
   const updateQuantity = async (itemId, size, quantity) => {
     if (quantity === 0) {
       const productData = products.find((product) => product._id === itemId);
@@ -80,6 +95,7 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData);
   };
 
+  // Get the total amount of items in the cart
   const getCartAmount = () => {
     let totalAmount = 0;
     for (const items in cartItems) {
@@ -95,6 +111,19 @@ const ShopContextProvider = (props) => {
     return totalAmount;
   };
 
+  // Add item to wishlist
+  const addToWishlist = (itemId) => {
+    setWishlistItems((prev) => ({ ...prev, [itemId]: true }));
+  };
+
+  // Remove item from wishlist
+  const removeFromWishlist = (itemId) => {
+    const updated = { ...wishlistItems };
+    delete updated[itemId];
+    setWishlistItems(updated);
+  };
+
+  // Context value to be provided to the app components
   const value = {
     products,
     currency,
@@ -108,6 +137,10 @@ const ShopContextProvider = (props) => {
     getCartCount,
     updateQuantity,
     getCartAmount,
+    wishlistItems,
+    getWishlistCount,  // Provide the function to get wishlist count
+    addToWishlist,
+    removeFromWishlist,
     navigate,
   };
 
