@@ -1,40 +1,17 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React from "react";
+import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [currentState, setCurrentState] = useState("Sign Up");
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const {
+    currentState,
+    setCurrentState,
+    form,
+    onChange,
+    onSubmitHandler,
+  } = useAuth();
+
   const navigate = useNavigate();
-
-  const onSubmitHandler = async (event) => {
-    event.preventDefault();
-    const url = currentState === "Login" ? "/login" : "/signup";
-
-    try {
-      const response = await axios.post(`http://localhost:8000${url}`, form);
-      const data = response.data;
-      console.log(response)
-      console.log(data);
-
-      if (currentState === "Login") {
-        if (data.token) {
-          sessionStorage.setItem("token", data.token);
-          navigate("/");
-          alert("Login successful");
-        } else {
-          alert(data.message || "Login failed");
-        }
-      } else {
-        alert("Signup successful. Please log in.");
-        setCurrentState("Login"); // Switch to Login after signup
-        setForm({ name: "", email: "", password: "" }); // Reset form
-      }
-    } catch (error) {
-      console.error("Axios Error:", error.response || error.message);
-      alert(error.response?.data?.message || "Server error");
-    }
-  };
 
   return (
     <form
@@ -49,8 +26,9 @@ const Login = () => {
       {currentState !== "Login" && (
         <input
           type="text"
+          name="name"
           value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          onChange={onChange}
           className="w-full px-3 py-2 border border-gray-800"
           placeholder="John Doe"
           required
@@ -59,8 +37,9 @@ const Login = () => {
 
       <input
         type="email"
+        name="email"
         value={form.email}
-        onChange={(e) => setForm({ ...form, email: e.target.value })}
+        onChange={onChange}
         className="w-full px-3 py-2 border border-gray-800"
         placeholder="hello@gmail.com"
         required
@@ -68,8 +47,9 @@ const Login = () => {
 
       <input
         type="password"
+        name="password"
         value={form.password}
-        onChange={(e) => setForm({ ...form, password: e.target.value })}
+        onChange={onChange}
         className="w-full px-3 py-2 border border-gray-800"
         placeholder="Password"
         required

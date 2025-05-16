@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Title from '../components/Title';
 
 const Profile = () => {
@@ -14,13 +14,35 @@ const Profile = () => {
     mobile: '',
   });
 
+  useEffect(() => {
+    const storedUser = sessionStorage.getItem('user');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setFormData((prev) => ({
+        ...prev,
+        firstName: user.name || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        street: user.street || '',
+        city: user.city || '',
+        state: user.state || '',
+        zip: user.zip || '',
+        country: user.country || '',
+        mobile: user.mobile || '',
+      }));
+    }
+  }, []);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSave = () => {
     console.log('Updated Profile:', formData);
-    // Call API to update profile here
+
+    // Optional: Send updated profile to backend and update sessionStorage
+    sessionStorage.setItem('user', JSON.stringify(formData));
+    alert("Profile updated!");
   };
 
   return (
@@ -29,6 +51,7 @@ const Profile = () => {
         <div className='text-xl sm:text-2xl text-center'>
           <Title text1={'PROFILE'} text2={'DETAILS'} />
         </div>
+
         <div className='flex gap-3'>
           <input
             name="firstName"
@@ -47,6 +70,7 @@ const Profile = () => {
             placeholder='Last Name'
           />
         </div>
+
         <input
           name="email"
           value={formData.email}
@@ -55,6 +79,7 @@ const Profile = () => {
           type="email"
           placeholder='Email Address'
         />
+
         <input
           name="street"
           value={formData.street}
@@ -63,6 +88,7 @@ const Profile = () => {
           type="text"
           placeholder='Street'
         />
+
         <div className='flex gap-3'>
           <input
             name="city"
@@ -81,6 +107,7 @@ const Profile = () => {
             placeholder='State'
           />
         </div>
+
         <div className='flex gap-3'>
           <input
             name="zip"
@@ -99,6 +126,7 @@ const Profile = () => {
             placeholder='Country'
           />
         </div>
+
         <input
           name="mobile"
           value={formData.mobile}
@@ -107,6 +135,7 @@ const Profile = () => {
           type="number"
           placeholder='Mobile'
         />
+
         <div className='w-full mt-4 text-end'>
           <button
             onClick={handleSave}
