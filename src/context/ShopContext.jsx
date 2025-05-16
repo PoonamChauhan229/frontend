@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { products } from "../assets/assets"; // Assuming you have a list of products here
+import { products } from "../assets/assets";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -15,7 +15,6 @@ const ShopContextProvider = (props) => {
   const currency = "$";
   const delivery_fee = 10;
 
-  // Load cart items and wishlist from localStorage on initial load
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem("cartItems"));
     if (storedCartItems) {
@@ -28,14 +27,12 @@ const ShopContextProvider = (props) => {
     }
   }, []);
 
-  // Save cart and wishlist items to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
     localStorage.setItem("wishlistItems", JSON.stringify(wishlistItems));
   }, [cartItems, wishlistItems]);
 
-  // Add item to cart
-  const addToCart = async (itemId, size) => {
+  const addToCart = (itemId, size) => {
     if (!size) {
       toast.error("Please Select a Size");
       return;
@@ -59,71 +56,52 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData);
   };
 
-  // Get the total count of items in the cart
   const getCartCount = () => {
     let totalCount = 0;
     for (const items in cartItems) {
-      for (const item in cartItems[items]) {
-        try {
-          if (cartItems[items][item] > 0) {
-            totalCount += cartItems[items][item];
-          }
-        } catch (error) {
-          // Error Handling
-        }
+      for (const size in cartItems[items]) {
+        totalCount += cartItems[items][size];
       }
     }
     return totalCount;
   };
 
-  // Get the wishlist count
   const getWishlistCount = () => {
-    return Object.keys(wishlistItems).length;  // Count the number of items in wishlistItems
+    return Object.keys(wishlistItems).length;
   };
 
-  // Update the quantity of a specific item in the cart
-  const updateQuantity = async (itemId, size, quantity) => {
+  const updateQuantity = (itemId, size, quantity) => {
     if (quantity === 0) {
-      const productData = products.find((product) => product._id === itemId);
       toast.success("Item Removed From The Cart");
     }
 
     let cartData = structuredClone(cartItems);
-
     cartData[itemId][size] = quantity;
-
     setCartItems(cartData);
   };
 
-  // Get the total amount of items in the cart
   const getCartAmount = () => {
     let totalAmount = 0;
     for (const items in cartItems) {
       let itemInfo = products.find((product) => product._id === items);
-      for (const item in cartItems[items]) {
-        try {
-          if (cartItems[items][item] > 0) {
-            totalAmount += itemInfo.price * cartItems[items][item];
-          }
-        } catch (error) {}
+      if (!itemInfo) continue;
+      for (const size in cartItems[items]) {
+        totalAmount += itemInfo.price * cartItems[items][size];
       }
     }
     return totalAmount;
   };
 
-  // Add item to wishlist
   const addToWishlist = (itemId) => {
     setWishlistItems((prev) => ({ ...prev, [itemId]: true }));
   };
 
-  // Remove item from wishlist
   const removeFromWishlist = (itemId) => {
     const updated = { ...wishlistItems };
     delete updated[itemId];
     setWishlistItems(updated);
   };
 
-  // Context value to be provided to the app components
   const value = {
     products,
     currency,
@@ -138,14 +116,16 @@ const ShopContextProvider = (props) => {
     updateQuantity,
     getCartAmount,
     wishlistItems,
-    getWishlistCount,  // Provide the function to get wishlist count
+    getWishlistCount,
     addToWishlist,
     removeFromWishlist,
     navigate,
   };
 
   return (
-    <ShopContext.Provider value={value}>{props.children}</ShopContext.Provider>
+    <ShopContext.Provider value={value}>
+      {props.children}
+    </ShopContext.Provider>
   );
 };
 

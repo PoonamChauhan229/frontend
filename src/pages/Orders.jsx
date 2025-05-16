@@ -32,7 +32,7 @@ const Orders = () => {
                   <p className='h-2 bg-green-500 rounded-full min-w-2'></p>
                   <p className='text-sm md:text-base'>Ready for Shipping</p>
                 </div>
-                <button className='px-4 py-2 text-sm font-medium border rounded-sm'>TRACK ORDER</button>
+                {/* <button className='px-4 py-2 text-sm font-medium border rounded-sm'>TRACK ORDER</button> */}
               </div>
             </div>
           ))
