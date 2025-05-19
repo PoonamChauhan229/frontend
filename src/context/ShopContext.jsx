@@ -10,6 +10,7 @@ const ShopContextProvider = (props) => {
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
   const [wishlistItems, setWishlistItems] = useState({});
+  const [reviews, setReviews] = useState({});
   const navigate = useNavigate();
 
   const currency = "$";
@@ -129,6 +130,14 @@ const ShopContextProvider = (props) => {
     setWishlistItems({});
   };
 
+  // 
+  const addReview = (productId, review) => {
+  setReviews(prev => ({
+    ...prev,
+    [productId]: [...(prev[productId] || []), review]
+  }));
+};
+
   // Context value to be provided to the app components
   const value = {
     products,
@@ -150,7 +159,10 @@ const ShopContextProvider = (props) => {
     addToWishlist,
     removeFromWishlist,
     navigate,
-    resetContextData,  // <-- add here
+    resetContextData,
+    reviews, addReview
+    
+    // <-- add here
   };
 
   return (
