@@ -3,10 +3,12 @@ import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import { assets } from '../assets/assets';
 import CartTotal from '../components/CartTotal';
+import LoginPromptModal from '../components/LoginPromptModal';
 
 const Cart = () => {
-  const { products, currency, cartItems, updateQuantity, navigate } = useContext(ShopContext);
+  const { products, currency, cartItems, updateQuantity, navigate, user } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
     const tempData = [];
@@ -34,33 +36,41 @@ const Cart = () => {
       <div>
         {cartData.map((item, index) => {
           const productData = products.find((product) => product._id === item._id);
+          if (!productData) return null;
 
           return (
-            <div key={index} className='grid py-4 text-gray-700 border-t border-b grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4'>
+            <div
+              key={index}
+              className='grid py-4 text-gray-700 border-t border-b grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4'
+            >
               <div className='flex items-start gap-6'>
                 <img className='w-16 sm:w-20' src={productData.image[0]} alt="Photo" />
                 <div>
                   <p className='text-sm font-medium sm:text-lg'>{productData.name}</p>
                   <div className='flex items-center gap-5 mt-2'>
                     <p>
-                      {currency}&nbsp;{productData.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {currency}&nbsp;{productData.price.toFixed(2)}
                     </p>
                     <p className='px-2 border sm:px-3 sm:py-1 bg-slate-50'>{item.size}</p>
                   </div>
                 </div>
               </div>
               <input
-                onChange={(e) => e.target.value === '' || e.target.value === '0' ? null : updateQuantity(item._id, item.size, Number(e.target.value))} 
-                className='px-1 py-1 border max-w-10 sm:max-w-20 sm:px-2' 
-                type="number" 
-                min={1} 
-                defaultValue={item.quantity} 
+                onChange={(e) => {
+                  if (e.target.value !== '' && e.target.value !== '0') {
+                    updateQuantity(item._id, item.size, Number(e.target.value));
+                  }
+                }}
+                className='px-1 py-1 border max-w-10 sm:max-w-20 sm:px-2'
+                type="number"
+                min={1}
+                defaultValue={item.quantity}
               />
-              <img 
-                onClick={() => updateQuantity(item._id, item.size, 0)} 
-                className='w-4 mr-4 cursor-pointer sm:w-5' 
-                src={assets.bin_icon} 
-                alt="Remove" 
+              <img
+                onClick={() => updateQuantity(item._id, item.size, 0)}
+                className='w-4 mr-4 cursor-pointer sm:w-5'
+                src={assets.bin_icon}
+                alt="Remove"
               />
             </div>
           );
@@ -70,9 +80,17 @@ const Cart = () => {
         <div className='w-full sm:w-[450px]'>
           <CartTotal />
           <div className='w-full text-end'>
-            <button 
-              onClick={() => navigate('/place-order')} 
-              className={`px-8 py-3 my-8 text-sm text-white bg-black active:bg-gray-700 ${isCartEmpty ? 'opacity-50 cursor-not-allowed' : ''}`}
+            <button
+              onClick={() => {
+                if (!user) {
+                  setShowLoginModal(true);
+                } else {
+                  navigate('/place-order');
+                }
+              }}
+              className={`px-8 py-3 my-8 text-sm text-white bg-black active:bg-gray-700 ${
+                isCartEmpty ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
               disabled={isCartEmpty}
             >
               PROCEED TO CHECKOUT
@@ -80,8 +98,16 @@ const Cart = () => {
           </div>
         </div>
       </div>
+
+      {showLoginModal && (
+        <LoginPromptModal
+          onClose={() => setShowLoginModal(false)}
+          onLogin={() => navigate('/login')}
+          onSignup={() => navigate('/signup')}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default Cart;
