@@ -4,9 +4,10 @@ import Title from '../components/Title';
 import { assets } from '../assets/assets';
 import CartTotal from '../components/CartTotal';
 import LoginPromptModal from '../components/LoginPromptModal';
+import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
 
 const Cart = () => {
-  const { products, currency, cartItems, updateQuantity, navigate, user } = useContext(ShopContext);
+  const { products, currency, cartItems, updateQuantity, navigate } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -27,6 +28,9 @@ const Cart = () => {
   }, [cartItems]);
 
   const isCartEmpty = cartData.length === 0;
+
+  // Check login based on token presence
+  const isLoggedIn = !!sessionStorage.getItem('token') || !!localStorage.getItem('token');
 
   return (
     <div className='border-t pt-14'>
@@ -55,17 +59,36 @@ const Cart = () => {
                   </div>
                 </div>
               </div>
-              <input
-                onChange={(e) => {
-                  if (e.target.value !== '' && e.target.value !== '0') {
-                    updateQuantity(item._id, item.size, Number(e.target.value));
-                  }
-                }}
-                className='px-1 py-1 border max-w-10 sm:max-w-20 sm:px-2'
-                type="number"
-                min={1}
-                defaultValue={item.quantity}
-              />
+
+              <div className='flex items-center gap-2 justify-center'>
+                <button
+                  onClick={() => updateQuantity(item._id, item.size, Math.max(item.quantity - 1, 1))}
+                  className='text-gray-700 hover:text-black'
+                  aria-label='Decrease quantity'
+                >
+                  <AiOutlineMinus size={20} />
+                </button>
+                <input
+                  onChange={(e) => {
+                    if (e.target.value !== '' && e.target.value !== '0') {
+                      updateQuantity(item._id, item.size, Number(e.target.value));
+                    }
+                  }}
+                  className='px-1 py-1 border max-w-12 text-center sm:max-w-20 sm:px-2'
+                  type="number"
+                  min={1}
+                  value={item.quantity}
+                  readOnly={false} // You can keep it false so user can input number directly
+                />
+                <button
+                  onClick={() => updateQuantity(item._id, item.size, item.quantity + 1)}
+                  className='text-gray-700 hover:text-black'
+                  aria-label='Increase quantity'
+                >
+                  <AiOutlinePlus size={20} />
+                </button>
+              </div>
+
               <img
                 onClick={() => updateQuantity(item._id, item.size, 0)}
                 className='w-4 mr-4 cursor-pointer sm:w-5'
@@ -76,13 +99,14 @@ const Cart = () => {
           );
         })}
       </div>
+
       <div className='flex justify-end my-20'>
         <div className='w-full sm:w-[450px]'>
           <CartTotal />
           <div className='w-full text-end'>
             <button
               onClick={() => {
-                if (!user) {
+                if (!isLoggedIn) {
                   setShowLoginModal(true);
                 } else {
                   navigate('/place-order');

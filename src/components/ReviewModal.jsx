@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { ShopContext } from '../context/ShopContext';
+import { assets } from '../assets/assets';  // Make sure this import path is correct
 
 const ReviewModal = ({ product, onClose }) => {
   const { addReview } = useContext(ShopContext);
@@ -36,20 +37,27 @@ const ReviewModal = ({ product, onClose }) => {
         <div className="mt-4">
           <label className="block mb-2 text-sm font-medium">Your Rating</label>
           <div className="flex gap-1">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                type="button"
-                onClick={() => setRating(star)}
-                onMouseEnter={() => setHover(star)}
-                onMouseLeave={() => setHover(0)}
-                className="text-2xl focus:outline-none"
-              >
-                <span className={star <= (hover || rating) ? 'text-yellow-400' : 'text-gray-300'}>
-                  ★
-                </span>
-              </button>
-            ))}
+            {[1, 2, 3, 4, 5].map((star) => {
+              const isActive = star <= (hover || rating);
+              return (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRating(star)}
+                  onMouseEnter={() => setHover(star)}
+                  onMouseLeave={() => setHover(0)}
+                  className="focus:outline-none"
+                >
+                  <img
+                    src={assets.star_icon}
+                    alt="Star"
+                    className={`w-3.5 h-3.5 transition-colors ${
+                      isActive ? 'opacity-100' : 'opacity-30'
+                    }`}
+                  />
+                </button>
+              );
+            })}
           </div>
         </div>
 

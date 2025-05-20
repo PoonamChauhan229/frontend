@@ -6,7 +6,7 @@ import RelatedProducts from '../components/RelatedProducts';
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency, addToCart, reviews } = useContext(ShopContext); // included reviews
+  const { products, currency, addToCart, reviews } = useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState('');
   const [size, setSize] = useState('');
@@ -21,6 +21,11 @@ const Product = () => {
   }, [productId, products]);
 
   const productReviews = reviews[productId] || [];
+
+  // Calculate average rating
+  const averageRating = productReviews.length
+    ? productReviews.reduce((acc, cur) => acc + cur.rating, 0) / productReviews.length
+    : 0;
 
   return productData ? (
     <div className='pt-10 transition-opacity duration-500 ease-in border-t-2 opacity-100'>
@@ -50,11 +55,14 @@ const Product = () => {
         <div className='flex-1'>
           <h1 className='mt-2 text-2xl font-medium'>{productData.name}</h1>
           <div className='flex items-center gap-1 mt-2'>
-            <img src={assets.star_icon} alt="Ratings" className="w-3.5" />
-            <img src={assets.star_icon} alt="Ratings" className="w-3.5" />
-            <img src={assets.star_icon} alt="Ratings" className="w-3.5" />
-            <img src={assets.star_icon} alt="Ratings" className="w-3.5" />
-            <img src={assets.star_dull_icon} alt="Ratings" className="w-3.5" />
+            {[...Array(5)].map((_, i) => (
+              <img
+                key={i}
+                src={i < Math.floor(averageRating) ? assets.star_icon : assets.star_dull_icon}
+                alt="Ratings"
+                className="w-3.5"
+              />
+            ))}
             <p className='pl-2'>({productReviews.length})</p>
           </div>
           <p className='mt-5 text-3xl font-medium'>{currency}{productData.price}</p>
@@ -130,9 +138,12 @@ const Product = () => {
                 <div key={idx} className="border-b py-4">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
-                      <span key={i} className={i < rating ? 'text-yellow-400' : 'text-gray-300'}>
-                        ★
-                      </span>
+                      <img
+                        key={i}
+                        src={i < rating ? assets.star_icon : assets.star_dull_icon}
+                        alt="Star"
+                        className={`w-3.5 h-3.5`}
+                      />
                     ))}
                   </div>
                   <p className="mt-2">{review}</p>
