@@ -4,6 +4,8 @@ import { assets } from "../assets/assets";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
 
+const PRODUCTS_PER_PAGE = 8; // Customize per page count
+
 const Collection = () => {
   const { products, search, showSearch } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
@@ -11,6 +13,8 @@ const Collection = () => {
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
   const [sortType, setSortType] = useState("relevant");
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   const toggleCategory = (e) => {
     if (category.includes(e.target.value)) {
@@ -42,6 +46,7 @@ const Collection = () => {
         category.includes(item.category)
       );
     }
+
     if (subCategory.length > 0) {
       productsCopy = productsCopy.filter((item) =>
         subCategory.includes(item.subCategory)
@@ -49,22 +54,23 @@ const Collection = () => {
     }
 
     setFilterProducts(productsCopy);
+    setCurrentPage(1); // Reset page on new filter
   };
 
   const sortProduct = () => {
     let fpCopy = filterProducts.slice();
-
     switch (sortType) {
       case "low-high":
-        setFilterProducts(fpCopy.sort((a, b) => a.price - b.price));
+        fpCopy.sort((a, b) => a.price - b.price);
         break;
       case "high-low":
-        setFilterProducts(fpCopy.sort((a, b) => b.price - a.price));
+        fpCopy.sort((a, b) => b.price - a.price);
         break;
       default:
         applyFilter();
-        break;
+        return;
     }
+    setFilterProducts(fpCopy);
   };
 
   const clearFilters = () => {
@@ -80,10 +86,22 @@ const Collection = () => {
     sortProduct();
   }, [sortType]);
 
+  // Pagination logic
+  const totalPages = Math.ceil(filterProducts.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = filterProducts.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE
+  );
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
+
   return (
     <div className="flex flex-col gap-1 pt-10 border-t sm:flex-row sm:gap-10">
-      {/* Filter Options */}
-      <div className="min-w-60">
+      {/* Filter Section (same as before) */}
+    
+     <div className="min-w-60">
         <p
           onClick={() => setShowFilter(!showFilter)}
           className="flex items-center gap-2 my-2 text-xl cursor-pointer"
@@ -186,11 +204,10 @@ const Collection = () => {
         </button>
       </div>
 
-      {/* View Product Items */}
+      {/* Product Section */}
       <div className="flex-1">
         <div className="flex justify-between mb-4 text-base sm:text-2xl">
           <Title text1={"ALL"} text2={"COLLECTIONS"} />
-          {/* Product Sort */}
           <select
             onChange={(e) => setSortType(e.target.value)}
             className="px-2 text-sm border-2 border-gray-300"
@@ -200,9 +217,10 @@ const Collection = () => {
             <option value="high-low">Sort by: High to Low</option>
           </select>
         </div>
-        {/* Map Products */}
+
+        {/* Product Grid */}
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 gap-y-6">
-          {filterProducts.map((item, index) => (
+          {paginatedProducts.map((item, index) => (
             <ProductItem
               key={index}
               id={item._id}
@@ -212,6 +230,39 @@ const Collection = () => {
             />
           ))}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-6 space-x-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-1 text-sm text-white bg-black rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => handlePageChange(i + 1)}
+                className={`px-3 py-1 text-sm rounded ${
+                  currentPage === i + 1
+                    ? "bg-gray-800 text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 text-sm text-white bg-black rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
