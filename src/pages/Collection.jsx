@@ -3,11 +3,13 @@ import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
+import { CartContext } from "../context/cartContext";
 
 const PRODUCTS_PER_PAGE = 8; // Customize per page count
 
 const Collection = () => {
-  const { products, search, showSearch } = useContext(ShopContext);
+  const { search, showSearch } = useContext(ShopContext);
+  const { products } = useContext(CartContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);

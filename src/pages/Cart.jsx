@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
+import {CartContext} from "../context/cartContext";
 import Title from '../components/Title';
 import { assets } from '../assets/assets';
 import CartTotal from '../components/CartTotal';
@@ -7,7 +8,7 @@ import LoginPromptModal from '../components/LoginPromptModal';
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
 
 const Cart = () => {
-  const { products, currency, cartItems, updateQuantity, navigate } = useContext(ShopContext);
+  const { products, currency, cartItems, updateQuantity, navigate } = useContext(CartContext);
   const [cartData, setCartData] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
 

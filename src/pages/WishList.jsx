@@ -2,9 +2,12 @@ import React, { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title"; // Optional: You can use a <h2> if this isn't available
 import { assets } from "../assets/assets"; // bin icon path
-
+import {CartContext} from "../context/cartContext";
+import { use } from "react";
 const Wishlist = () => {
-  const { products, wishlistItems, addToWishlist, removeFromWishlist, currency } = useContext(ShopContext);
+  const { wishlistItems, addToWishlist, removeFromWishlist } = useContext(ShopContext);
+
+  const {products,currency}=useContext(CartContext);
 
   // Filtering products that are present in the wishlistItems object
   const wishlistData = products.filter((product) => wishlistItems[product._id]);

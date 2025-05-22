@@ -4,6 +4,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import { FaRegHeart } from 'react-icons/fa';
 import { HiOutlineHeart } from 'react-icons/hi';
+import {CartContext} from "../context/cartContext";
 
 
 const NavBar = () => {
@@ -13,11 +14,14 @@ const NavBar = () => {
 
   const {
     setShowSearch,
-    getWishlistCount,
-    getCartCount,
-    setCartItems,
+    getWishlistCount,   
     setWishlistItems,
   } = useContext(ShopContext);
+
+  const {
+    setCartItems,
+    getCartCount
+  } = useContext(CartContext);
 
   // Check if user is logged in by token presence
   const isLoggedIn = !!sessionStorage.getItem('token') || !!localStorage.getItem('token');

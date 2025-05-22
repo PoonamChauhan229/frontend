@@ -2,9 +2,10 @@ import React, { useContext, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import ReviewModal from '../components/ReviewModal';
+import { CartContext } from '../context/cartContext';
 
 const Orders = () => {
-  const { products, currency } = useContext(ShopContext);
+  const { products, currency } = useContext(CartContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 

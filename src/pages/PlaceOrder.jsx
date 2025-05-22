@@ -4,11 +4,12 @@ import CartTotal from '../components/CartTotal';
 import { assets } from '../assets/assets';
 import { ShopContext } from '../context/ShopContext';
 import SuccessModal from '../components/SuccessModal';
+import {CartContext} from "../context/cartContext";
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState('cod');
   const [showModal, setShowModal] = useState(false);
-  const { navigate } = useContext(ShopContext);
+  const { navigate } = useContext(CartContext);
 
   const handlePlaceOrder = () => {
     // Here you can add your order placing logic (API call etc.)
