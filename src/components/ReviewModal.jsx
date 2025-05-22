@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
-import { ShopContext } from '../context/ShopContext';
-import { assets } from '../assets/assets';  // Make sure this import path is correct
-import {CartContext} from "../context/cartContext";
+import { ReviewContext } from '../context/ReviewContext';
+import { assets } from '../assets/assets'; 
+
 const ReviewModal = ({ product, onClose }) => {
-  const { addReview } = useContext(ShopContext);
+  const { addReview } = useContext(ReviewContext);
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [review, setReview] = useState("");

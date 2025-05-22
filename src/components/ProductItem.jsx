@@ -1,16 +1,19 @@
 import React, { useContext } from "react";
-import { ShopContext } from "../context/ShopContext";
+import { CartContext } from "../context/CartContext";
 import { Link } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import {CartContext} from "../context/cartContext";
+import { WishlistContext } from "../context/WishlistContext";
 
 const ProductItem = ({ id, image, name, price }) => {
   const {
-    currency,
+    currency}
+    = useContext(CartContext);
+
+  const {
     addToWishlist,
     removeFromWishlist,
     wishlistItems,
-  } = useContext(ShopContext);
+  } = useContext(WishlistContext);
 
   const isInWishlist = wishlistItems?.[id];
 

@@ -1,14 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { ShopContext } from '../context/ShopContext';
-import {CartContext} from "../context/cartContext";
 import Title from '../components/Title';
 import { assets } from '../assets/assets';
 import CartTotal from '../components/CartTotal';
 import LoginPromptModal from '../components/LoginPromptModal';
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
+import { CartContext } from '../context/cartContext';
 
 const Cart = () => {
-  const { products, currency, cartItems, updateQuantity, navigate } = useContext(CartContext);
+  const { products, currency, cartItems, updateQuantity, navigate } = useContext(CartContext);;
   const [cartData, setCartData] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -79,7 +78,7 @@ const Cart = () => {
                   type="number"
                   min={1}
                   value={item.quantity}
-                  readOnly={false} // You can keep it false so user can input number directly
+                  readOnly={false} 
                 />
                 <button
                   onClick={() => updateQuantity(item._id, item.size, item.quantity + 1)}

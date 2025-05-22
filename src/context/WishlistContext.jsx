@@ -1,15 +1,9 @@
-// src/context/ShopContext.js
 import React, { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
-export const ShopContext = createContext();
+export const WishlistContext = createContext();
 
-const ShopContextProvider = ({ children }) => {
-  const [search, setSearch] = useState("");
-  const [showSearch, setShowSearch] = useState(false);
+const WishlistContextProvider = ({ children }) => {
   const [wishlistItems, setWishlistItems] = useState({});
-  const [reviews, setReviews] = useState({});
-  const navigate = useNavigate();
 
   useEffect(() => {
     const storedWishlistItems = JSON.parse(localStorage.getItem("wishlistItems"));
@@ -34,38 +28,23 @@ const ShopContextProvider = ({ children }) => {
     setWishlistItems(updated);
   };
 
-  const resetContextData = () => {
+  const resetWishlist = () => {
     setWishlistItems({});
   };
 
-  const addReview = (productId, review) => {
-    setReviews((prev) => ({
-      ...prev,
-      [productId]: [...(prev[productId] || []), review],
-    }));
-  };
-
   return (
-    <ShopContext.Provider
+    <WishlistContext.Provider
       value={{
-        search,
-        setSearch,
-        showSearch,
-        setShowSearch,
         wishlistItems,
-        setWishlistItems,
         getWishlistCount,
         addToWishlist,
         removeFromWishlist,
-        navigate,
-        resetContextData,
-        reviews,
-        addReview,
+        resetWishlist,
       }}
     >
       {children}
-    </ShopContext.Provider>
+    </WishlistContext.Provider>
   );
 };
 
-export default ShopContextProvider;
+export default WishlistContextProvider

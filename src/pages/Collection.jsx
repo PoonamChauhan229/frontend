@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ShopContext } from "../context/ShopContext";
+import { SearchContext } from "../context/SearchContext";
 import { assets } from "../assets/assets";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
@@ -8,7 +8,7 @@ import { CartContext } from "../context/cartContext";
 const PRODUCTS_PER_PAGE = 8; // Customize per page count
 
 const Collection = () => {
-  const { search, showSearch } = useContext(ShopContext);
+  const { search, showSearch } = useContext(SearchContext);
   const { products } = useContext(CartContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);

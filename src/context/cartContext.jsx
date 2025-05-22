@@ -1,4 +1,3 @@
-// src/context/CartContext.js
 import React, { createContext, useState, useEffect } from "react";
 import { products } from "../assets/assets"; 
 import { toast } from "react-toastify";

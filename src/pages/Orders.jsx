@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import ReviewModal from '../components/ReviewModal';
 import { CartContext } from '../context/cartContext';

@@ -1,11 +1,13 @@
 import React, { useContext } from "react";
-import { ShopContext } from "../context/ShopContext";
-import Title from "../components/Title"; // Optional: You can use a <h2> if this isn't available
-import { assets } from "../assets/assets"; // bin icon path
-import {CartContext} from "../context/cartContext";
+
+import Title from "../components/Title"; 
+import { assets } from "../assets/assets"; 
+
 import { use } from "react";
+import { CartContext } from "../context/CartContext";
+import { WishlistContext } from "../context/WishlistContext";
 const Wishlist = () => {
-  const { wishlistItems, addToWishlist, removeFromWishlist } = useContext(ShopContext);
+  const { wishlistItems, addToWishlist, removeFromWishlist } = useContext(WishlistContext);
 
   const {products,currency}=useContext(CartContext);
 
@@ -15,9 +17,9 @@ const Wishlist = () => {
   // Toggle function to add/remove items from wishlist
   const toggleWishlist = (itemId) => {
     if (wishlistItems[itemId]) {
-      removeFromWishlist(itemId); // If the item is already in the wishlist, remove it
+      removeFromWishlist(itemId);
     } else {
-      addToWishlist(itemId); // If the item is not in the wishlist, add it
+      addToWishlist(itemId);
     }
   };
 

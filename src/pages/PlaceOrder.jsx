@@ -2,20 +2,16 @@ import React, { useContext, useState } from 'react';
 import Title from '../components/Title';
 import CartTotal from '../components/CartTotal';
 import { assets } from '../assets/assets';
-import { ShopContext } from '../context/ShopContext';
 import SuccessModal from '../components/SuccessModal';
-import {CartContext} from "../context/cartContext";
+import { NavigationContext } from '../context/NavigationContext';
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState('cod');
   const [showModal, setShowModal] = useState(false);
-  const { navigate } = useContext(CartContext);
+  const { navigate } = useContext(NavigationContext);
 
   const handlePlaceOrder = () => {
-    // Here you can add your order placing logic (API call etc.)
-
-    // After successful order, show modal
-    setShowModal(true);
+        setShowModal(true);
   };
 
   const handleModalClose = () => {
