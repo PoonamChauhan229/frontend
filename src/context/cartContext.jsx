@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 export const CartContext = createContext();
 
-const CartContextProvider = ({ children }) => {
+const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState({});
   const delivery_fee = 10;
   const currency = "$";
@@ -97,4 +97,4 @@ const CartContextProvider = ({ children }) => {
   );
 };
 
-export default CartContextProvider;
+export default CartProvider;
