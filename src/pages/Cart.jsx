@@ -5,9 +5,11 @@ import CartTotal from '../components/CartTotal';
 import LoginPromptModal from '../components/LoginPromptModal';
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
 import { CartContext } from '../context/cartContext';
+import { NavigationContext } from '../context/NavigationContext';
 
 const Cart = () => {
-  const { products, currency, cartItems, updateQuantity, navigate } = useContext(CartContext);;
+  const {navigate}=useContext(NavigationContext)
+  const { products, currency, cartItems, updateQuantity } = useContext(CartContext);;
   const [cartData, setCartData] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
